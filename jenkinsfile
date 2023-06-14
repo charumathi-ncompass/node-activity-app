@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Cloning Git') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/charumathi-ncompass/node-docker-codedeploy.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/charumathi-ncompass/node-activity-app.git']])
             }
         }
         stage('Building Image') {
