@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+    environment {
+        AWS_ACCOUNT_ID = "368355641188" 
+        AWS_DEFAULT_REGION = "us-east-1"
+        IMAGE_REPO_NAME = "node-app"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+        TASK_DEFN_FAMILY = "node-task-ec2"
+    }
+    stages {
+        stage('Logging into AWS ECR') {
+            steps {
+                script {
+                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                }
+            }
+        }
+        stage('Cloning Git') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/charumathi-ncompass/node-docker-codedeploy.git']])
+            }
+        }
+        stage('Building Image') {
+            steps {
+                script {
+                    dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+        stage('Pushing to ECR') {
+            steps {
+                script {
+                    sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}"
+                    sh "docker push ${REPOSITORY_URI}:${IMAGE_TAG}"
+                }
+            }
+        }
+        stage('changing tag value in container_defn.json') {
+            steps {
+                script {
+                    sh '''
+                    sed -i "s/tag_value/${BUILD_NUMBER}/g" ./container_defn.json
+                    '''
+                }
+            }
+        }
+        stage('Creating new task definition') {
+            steps {
+                script {
+                    sh "aws ecs register-task-definition --family ${TASK_DEFN_FAMILY} --cli-input-json file://./container_defn.json --region ${AWS_DEFAULT_REGION}"
+                    sh "aws ecs list-task-definitions"
+                }
+            }
+        }
+       
+
+    }
+}
