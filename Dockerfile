@@ -1,12 +1,12 @@
 
 FROM node:slim
-WORKDIR /app
+WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 COPY . /app
 RUN npm run build
-EXPOSE 3000
-CMD npm run start
+# EXPOSE 3000
+CMD [ "node", "dist/main.js" ]
 # CMD [ "npm", "run", "start:prod" ]
 # FROM node:slim
 # WORKDIR /app
