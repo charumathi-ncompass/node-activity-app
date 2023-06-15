@@ -1,0 +1,24 @@
+{
+    "family": "node-task-ec2", 
+    "networkMode": "bridge", 
+    "executionRoleArn": "arn:aws:iam::368355641188:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "node-container", 
+            "image": "368355641188.dkr.ecr.us-east-1.amazonaws.com/node-app:tag_value", 
+            "portMappings": [
+                {
+                    "containerPort": 3000, 
+                    "hostPort": 3000, 
+                    "protocol": "tcp"
+                }
+            ], 
+            "essential": true
+        }
+    ], 
+    "requiresCompatibilities": [
+        "EC2"
+    ], 
+    "cpu": "700", 
+    "memory": "400"
+}
