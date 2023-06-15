@@ -3,7 +3,7 @@ FROM node:slim
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
-COPY . /app
+COPY . /usr/src/app
 RUN npm run build
 # EXPOSE 3000
 CMD [ "node", "dist/main.js" ]
