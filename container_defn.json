@@ -19,6 +19,6 @@
     "requiresCompatibilities": [
         "EC2"
     ], 
-    "cpu": "700", 
-    "memory": "400"
+    "cpu": "1 vcpu", 
+    "memory": "1000"
 }
