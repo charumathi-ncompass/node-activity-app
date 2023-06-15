@@ -2,7 +2,7 @@
 FROM node:slim
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm install
+RUN npm install axios
 COPY . /usr/src/app
 RUN npm run build
 # EXPOSE 3000
