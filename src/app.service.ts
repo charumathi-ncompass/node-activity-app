@@ -30,7 +30,7 @@ export class AppService {
   }
 
   getHello(): string {
-    return 'Hello NestJS!';
+    return 'Hello NestJS from jenkins!';
   }
 }
 
